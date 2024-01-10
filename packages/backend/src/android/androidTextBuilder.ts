@@ -126,6 +126,7 @@ export class androidTextBuilder extends androidDefaultBuilder {
     const element = new androidElement("TextView")
       .addModifier(["android:text", updatedText])
       .addModifier(["android:fontFamily",fontFamily])
+      .addModifier(["android:includeFontPadding","false"])
       .addModifier(["android:textSize",`${fontSize}sp`])
       .addModifier(["android:textFontWeight",fontWeight])
       .addModifier(["android:letterSpacing", letterSpacing])
