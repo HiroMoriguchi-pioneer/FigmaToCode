@@ -3,9 +3,48 @@ import { getCommonRadius } from "../../common/commonRadius";
 import { sliceNum } from "../../common/numToAutoFixed";
 import { resourceLowerCaseName } from "../androidDefaultBuilder";
 
+export const colors: { [string : string]: string } = {
+  text_normal : "e1e1e1",
+  text_selectPoint : "a1a1a1",
+  text_sub : "7c7c84",
+  text_normal_black : "24242a",
+  color_accent : "1ff8f8",
+  background_sideMapList : "0e0e11",
+  background_fullscreen : "0e0f11",
+  backgorund_routeInfo_destination : "28282c",
+  background_textField : "343434",
+  background_pop_up_gradientTop : "30353c",
+  background_pop_up_gradientBottom : "121416",
+  back_pop_up : "040405",
+  divider_list : "3a434d",
+  border_list  : "3f4d5e",
+  backgroud_map_common_button : "e4e8f2",
+  border_map_common_button : "ffffff",
+  background_map_accent_button : "f2f4fa",
+  background_guide_general_road : "e4e8f2",
+  background_guide_toll_road : "22b7f2",
+  background_lane_plate : "143783",
+  background_guide_cross : "eef2fc",
+  background_guide_cross_night : "143783",
+  border_guide_cross : "808080",
+  background_highway_routeMonitor : "c2c6ce",
+  border_highway_routeMonitor : "f0f0f0",
+  background_highway_facility_up : "0a5c33",
+  background_border_highway_facility_middle : "0d2d1d",
+  background_highway_facility_low : "eaedf3",
+  background_highway_exit : "2156c0",
+  background_highway_road : "d9d9d9",
+  background_highway_roadside : "9f9f9f",
+  background_route_general_light_green : "88f888",
+  background_route_general_green : "10b010",
+  background_route_toll_light_blue : "88c0f8",
+  background_route_toll_blue : "1888d8",
+  background_route_toll_dark_blue : "0062c0"
+}
+
 export const AndroidSolidColor = (fill: Paint): string => {
   if (fill && fill.type === "SOLID") {
-    return androidColor(fill.color, fill.opacity ?? 1.0);
+    return androidColor(fill.color, fill.opacity ?? 1.0, false);
   }
 
   return "";
@@ -50,7 +89,7 @@ export const androidStrokes = (node: SceneNode, isFirst: boolean): string => {
     const color = AndroidSolidColor(node.strokes[0])
     const lineWeight = typeof node.strokeWeight === "number" ? node.strokeWeight : 1
 
-    return `${isFirst ? "" : "_"}border_${color}_weight:${lineWeight}`
+    return `${isFirst ? "" : "_"}border_${color}_weight_${lineWeight}`
   }
   return ""
 }
@@ -91,17 +130,23 @@ export const androidCornerRadius = (node: SceneNode): string => {
   return ""
 };
 
-export const androidColor = (color: RGB | RGBA, opacity: number, hasSharp: boolean = true): string => {
-  if (color.r + color.g + color.b === 0 && opacity === 1) {
-    return "@color/black";
-  }
-
-  if (color.r + color.g + color.b === 3 && opacity === 1) {
-    return "@color/white";
-  }
-
-  return `${hasSharp ? "#" : ""}${color2hex(opacity)}${color2hex(color.r)}${color2hex(color.g)}${color2hex(color.b)}`;
+export const androidColor = (color: RGB | RGBA, opacity: number, prefix: boolean = true): string => {
+  const hex = `${color2hex(color.r)}${color2hex(color.g)}${color2hex(color.b)}`;
+  return convertResourceColor(hex, prefix)
 };
+
+const convertResourceColor = (hex: string, prefix: boolean): string => {
+  const reversed = Object.entries(colors).reduce((acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  }, {} as { [key: string]: string });
+
+  if (prefix) {
+    return reversed[hex] ? `@color/${reversed[hex]}` : "#" + hex 
+  } else {
+    return reversed[hex] ? `${reversed[hex]}` : hex
+  }
+}
 
 export const color2hex = (color: number): string => {
   const i = Math.min(255,Math.round(color * 255));
