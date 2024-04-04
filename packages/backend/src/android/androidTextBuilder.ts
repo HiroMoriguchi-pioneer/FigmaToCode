@@ -185,17 +185,13 @@ export class androidTextBuilder extends androidDefaultBuilder {
   };
 
   textAlignment = (node: TextNode): string => {
-    let hAlign = "";
     switch (node.textAlignHorizontal) {
       case "LEFT":
-        hAlign = "textStart"
+        return "textStart"
       case "RIGHT":
-        hAlign = "textEnd"
+        return "textEnd"
       default:
-        hAlign = "center"
+        return "center"
     }
-
-    // when they are centered
-    return hAlign;
   };
 }
