@@ -131,7 +131,22 @@ export class androidDefaultBuilder {
     const hasLinearLayoutParent = parentType === AndroidType.linearLayout
     const layoutPosition = `android:${hasLinearLayoutParent ? "layout_margin" : "padding"}`
 
-    if (!hasLinearLayoutParent && node.parent && (node.x > 0 || node.y > 0)) {
+    if ('constraints' in node) {
+      if (node.parent && ('width' in node.parent) && node.constraints.horizontal === 'MAX') {
+        const pos = node.parent.width - node.width - x;
+        this.pushModifier(['android:layout_marginEnd',`${sliceNum(pos)}dp`]);
+      }
+      else {
+        this.pushModifier(['android:layout_marginStart',`${sliceNum(x)}dp`]);
+      }
+      if (node.parent && ('height' in node.parent) && node.constraints.vertical === 'MAX') {
+        const pos = node.parent.height - node.height - y;
+        this.pushModifier(['android:layout_marginBottom',`${sliceNum(pos)}dp`]);
+      }
+      else {
+        this.pushModifier(['android:layout_marginTop',`${sliceNum(y)}dp`]);
+      }
+    } else if (!hasLinearLayoutParent && node.parent && (node.x > 0 || node.y > 0)) {
       this.pushModifier(['android:layout_marginStart',`${sliceNum(x)}dp`]);
       this.pushModifier(['android:layout_marginTop',`${sliceNum(y)}dp`]);
     } else {

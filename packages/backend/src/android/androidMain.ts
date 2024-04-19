@@ -584,10 +584,28 @@ const createDirectionalStack = (
       ).length !== 0
     ).length !== 0
 
-    if (!hasLinearLayoutParent && node.parent && (node.x > 0 || node.y > 0)) {
-      prop['android:layout_marginStart']=`${sliceNum(node.x)}dp`;
-      prop['android:layout_marginTop']=`${sliceNum(node.y)}dp`;
-    } 
+    if (node.x > 0 || node.y > 0) {
+      if ('constraints' in node) {
+        if (node.parent && ('width' in node.parent) && node.constraints.horizontal === 'MAX') {
+          const pos = node.parent.width - node.width - node.x;
+          prop['android:layout_marginEnd']=`${sliceNum(pos)}dp`;
+        }
+        else {
+          prop['android:layout_marginStart']=`${sliceNum(node.x)}dp`;
+        }
+        if (node.parent && ('height' in node.parent) && node.constraints.vertical === 'MAX') {
+          const pos = node.parent.height - node.height - node.y;
+          prop['android:layout_marginBottom']=`${sliceNum(pos)}dp`;
+        }
+        else {
+          prop['android:layout_marginTop']=`${sliceNum(node.y)}dp`;
+        }
+      }
+      else if (!hasLinearLayoutParent) {
+        prop['android:layout_marginStart']=`${sliceNum(node.x)}dp`;
+        prop['android:layout_marginTop']=`${sliceNum(node.y)}dp`;
+      }   
+    }
     
     if (!node.parent) {
       prop["xmlns:android"]="http://schemas.android.com/apk/res/android"
