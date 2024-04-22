@@ -22,6 +22,7 @@ export type PluginSettings = {
   swiftUIGenerationMode: string;
   androidGenerationMode: string;
   roundTailwind: boolean;
+  androidComponentPrefix: string;
 };
 
 export const run = (settings: PluginSettings) => {

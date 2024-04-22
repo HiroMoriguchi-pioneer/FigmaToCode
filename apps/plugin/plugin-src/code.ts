@@ -28,6 +28,7 @@ const defaultPluginSettings: PluginSettings = {
   swiftUIGenerationMode: "snippet",
   androidGenerationMode: "snippet",
   roundTailwind: false,
+  androidComponentPrefix: "jp.pioneer.pcloud.navigation.view.custom.DayNight",
 };
 
 // A helper type guard to ensure the key belongs to the PluginSettings type

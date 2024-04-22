@@ -346,7 +346,7 @@ const androidIconTextButton = (node: SceneNode & BaseFrameMixin, layout: SceneNo
   const linear = node.children.filter(child => androidNameParser(child.name).type === AndroidType.linearLayout)[0]
   const isForwardText = "children" in linear && androidNameParser(linear.children[0].name).type === AndroidType.text
 
-  let result = new androidDefaultBuilder("androidx.appcompat.widget.AppCompatButton");
+  let result = new androidDefaultBuilder("Button");
   if (ostyle != outputStyle.shrink) {
     result = result.setText(text)
                 .setId(node)
@@ -387,7 +387,7 @@ const androidRadioButton = (node: SceneNode & BaseFrameMixin): string => {
 
 const androidList = (node: SceneNode & BaseFrameMixin): string => {
 
-  const result = new androidDefaultBuilder("androidx.recyclerview.widget.RecyclerView", "")
+  const result = new androidDefaultBuilder("RecyclerView", "")
     .setId(node)
     .position(node,localSettings.optimizeLayout)
     .size(node,localSettings.optimizeLayout);
@@ -641,9 +641,13 @@ export const generateAndroidViewCode = (
     return `${children}`;
   }
   else if (!children) {
+    if (className !== "Space") {
+      className = localSettings.androidComponentPrefix + className
+    }
     return `<${className}\n ${compactPropertiesArray}/>\n`;
   }
   else {
+    className = localSettings.androidComponentPrefix + className
     return `<${className}\n ${compactPropertiesArray}>\n\n${indentString(
       children
     )}\n</${className}>\n`;

@@ -46,7 +46,7 @@ export const androidButtonType = (node: SceneNode & BaseFrameMixin ): {
   } else if (getIsAsset(layout.foreground)) {
     return {
       type: ButtonType.ImageTextButton, 
-      value: "androidx.appcompat.widget.AppCompatButton", 
+      value: "Button", 
       foreground: layout.foreground, 
       background: undefined, 
       text: childText 
@@ -54,7 +54,7 @@ export const androidButtonType = (node: SceneNode & BaseFrameMixin ): {
   } else {
     return {
       type: ButtonType.Button,
-      value: "androidx.appcompat.widget.AppCompatButton",
+      value: "Button",
       foreground: layout.foreground,
       background: undefined,
       text: childText 
