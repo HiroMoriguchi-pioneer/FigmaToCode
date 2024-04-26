@@ -85,3 +85,7 @@ export const androidNameParser = (name: string | undefined): { type: AndroidType
     return { type: type, id: id.join("_") ?? "" }
   }
 }
+
+export const fmtId = (name:string) : string => {
+  return  !name ? "" : name.toLowerCase().replace('-','_');
+}

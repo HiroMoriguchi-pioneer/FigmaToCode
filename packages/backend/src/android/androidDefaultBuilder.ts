@@ -11,7 +11,7 @@ import {
 } from "./builderImpl/androidBlend";
 import { getCommonPositionValue } from "../common/commonPosition";
 import { Modifier, androidElement } from "./builderImpl/androidParser";
-import { AndroidType, androidNameParser } from "./builderImpl/androidNameParser";
+import { AndroidType, androidNameParser, fmtId } from "./builderImpl/androidNameParser";
 import { globalTextStyleSegments } from "../altNodes/altConversion";
 
 export const isAbsolutePosition = (
@@ -232,7 +232,7 @@ export class androidDefaultBuilder {
     if ("name" in node && node.name ) {
       let id = androidNameParser(node.name).id
       if (id !== "") {
-        this.pushModifier(['android:id', `@+id/${id}`]);
+        this.pushModifier(['android:id', `@+id/${fmtId(id)}`]);
       } 
     }
     return this;

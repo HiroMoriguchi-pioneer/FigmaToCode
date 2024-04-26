@@ -8,7 +8,7 @@ import { commonSortChildrenWhenInferredAutoLayout } from "../common/commonChildr
 import { androidShadow } from "./builderImpl/androidEffects";
 import { TextNode } from "../altNodes/altMixins2";
 import { androidSize } from "./builderImpl/androidSize";
-import { AndroidType, androidNameParser } from "./builderImpl/androidNameParser";
+import { AndroidType, androidNameParser, fmtId } from "./builderImpl/androidNameParser";
 import { ButtonType, androidButtonType } from "./builderImpl/androidButtonType";
 
 let localSettings: PluginSettings;
@@ -78,14 +78,14 @@ const androidWidgetGenerator = (
 
     if (hasParentOfComponentSet) {
       if (parentType == AndroidType.button && node.parent?.children?.findIndex((d) => d.id === node.id) === 0) {
-        comp.push(`\n<!-- Component_Set_Item ${node.parent?.name} start -->`);
+        comp.push(`\n<!-- Component_Set_Item ${fmtId(node.parent?.name)} start -->`);
       }
       else if (parentType == AndroidType.listItem || parentType == AndroidType.button) {
         const cols = node.name.split('=');
-        comp.push(`\n<!-- Component_Set_Item ${node.parent?.name}_${cols[1]} start -->`);
+        comp.push(`\n<!-- Component_Set_Item ${fmtId(`${node.parent?.name}_${cols[1]}`)} start -->`);
       }
       else {
-        comp.push(`\n<!-- Component_Set_Item ${node.parent?.name}_${node.name} start -->`);
+        comp.push(`\n<!-- Component_Set_Item ${fmtId(`${node.parent?.name}_${node.name}`)} start -->`);
       }
     }
 
@@ -96,9 +96,9 @@ const androidWidgetGenerator = (
           case AndroidType.list:
             comp.push(androidComponent(node, indentLevel));
             if (node.type === "COMPONENT") {
-              compXml.push(`\n<!-- ${node.name}_item.xml start -->`)
+              compXml.push(`\n<!-- ${fmtId(node.name)}_item.xml start -->`)
               compXml.push(androidWidgetGenerator(node.children, indentLevel));
-              compXml.push(`<!-- ${node.name}_item.xml end -->\n`)
+              compXml.push(`<!-- ${fmtId(node.name)}_item.xml end -->\n`)
             }
             break;
           case AndroidType.listItem:
@@ -115,11 +115,11 @@ const androidWidgetGenerator = (
             }
             else if (node.parent?.children?.findIndex((d) => d.id === node.id) === 0) {
               comp.push(androidComponent(node, indentLevel, outputStyle.selectable));
-              comp.push(`<!-- Component_Set_Item ${node.parent?.name} end -->\n`);
+              comp.push(`<!-- Component_Set_Item ${fmtId(node.parent?.name)} end -->\n`);
               const cols = node.name.split('=');
-              comp.push(`\n<!-- Component_Set_Item ${node.parent?.name}_${cols[1]} start -->`);
+              comp.push(`\n<!-- Component_Set_Item ${fmtId(`${node.parent?.name}_${cols[1]}`)} start -->`);
               comp.push(androidComponent(node, indentLevel, outputStyle.shrink));
-              comp.push(`<!-- Component_Set_Item ${node.parent?.name}_${cols[1]} end -->\n`)
+              comp.push(`<!-- Component_Set_Item ${fmtId(`${node.parent?.name}_${cols[1]}`)} end -->\n`)
             }
             else {
               comp.push(androidComponent(node, indentLevel, outputStyle.shrink));
@@ -158,10 +158,10 @@ const androidWidgetGenerator = (
       }
       else if (parentType == AndroidType.listItem || parentType == AndroidType.button) {
         const cols = node.name.split('=');
-        comp.push(`<!-- Component_Set_Item ${node.parent?.name}_${cols[1]} end -->\n`);
+        comp.push(`<!-- Component_Set_Item ${fmtId(`${node.parent?.name}_${cols[1]}`)} end -->\n`);
       }
       else {
-        comp.push(`<!-- Component_Set_Item ${node.parent?.name}_${node.name} end -->\n`);
+        comp.push(`<!-- Component_Set_Item ${fmtId(`${node.parent?.name}_${node.name}`)} end -->\n`);
       }
     }
   });
@@ -400,7 +400,7 @@ const androidList = (node: SceneNode & BaseFrameMixin): string => {
 
   result.element.addModifier(androidBackground(node))
   result.pushModifier(androidShadow(node));
-  result.element.addModifier(["tools:listitem", `@layout/${node.name}_item`])
+  result.element.addModifier(["tools:listitem", `@layout/${fmtId(node.name)}_item`])
   return result.build(0);
 };
 
