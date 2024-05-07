@@ -584,27 +584,33 @@ const createDirectionalStack = (
       ).length !== 0
     ).length !== 0
 
-    if (node.x > 0 || node.y > 0) {
-      if ('constraints' in node) {
-        if (node.parent && ('width' in node.parent) && node.constraints.horizontal === 'MAX') {
-          const pos = node.parent.width - node.width - node.x;
-          prop['android:layout_marginEnd']=`${sliceNum(pos)}dp`;
-        }
-        else {
-          prop['android:layout_marginStart']=`${sliceNum(node.x)}dp`;
-        }
-        if (node.parent && ('height' in node.parent) && node.constraints.vertical === 'MAX') {
-          const pos = node.parent.height - node.height - node.y;
-          prop['android:layout_marginBottom']=`${sliceNum(pos)}dp`;
-        }
-        else {
-          prop['android:layout_marginTop']=`${sliceNum(node.y)}dp`;
-        }
+    if ((node.x > 0 || node.y > 0) && 'constraints' in node && !hasLinearLayoutParent) {
+      let isStartG: boolean;
+      let isTopG: boolean;
+      
+      if (node.parent && ('width' in node.parent) && node.constraints.horizontal === 'MAX') {
+        const pos = node.parent.width - node.width - node.x;
+        prop['android:layout_marginEnd']=`${sliceNum(pos)}dp`;
+        isStartG = false;
       }
-      else if (!hasLinearLayoutParent) {
+      else {
         prop['android:layout_marginStart']=`${sliceNum(node.x)}dp`;
+        isStartG = true;
+      }
+      if (node.parent && ('height' in node.parent) && node.constraints.vertical === 'MAX') {
+        const pos = node.parent.height - node.height - node.y;
+        prop['android:layout_marginBottom']=`${sliceNum(pos)}dp`;
+        isTopG = false;
+      }
+      else {
         prop['android:layout_marginTop']=`${sliceNum(node.y)}dp`;
-      }   
+        isTopG = true;
+      }
+
+      if (!(isStartG && isTopG)) {
+        const gravity = `${isStartG ? "start" : "end"}|${isTopG ? "top" : "bottom"}`
+        prop['android:layout_gravity'] = gravity;
+      }
     }
     
     if (!node.parent) {
