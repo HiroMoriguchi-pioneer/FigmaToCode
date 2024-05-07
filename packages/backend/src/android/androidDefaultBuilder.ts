@@ -131,24 +131,31 @@ export class androidDefaultBuilder {
     const hasLinearLayoutParent = parentType === AndroidType.linearLayout
     const layoutPosition = `android:${hasLinearLayoutParent ? "layout_margin" : "padding"}`
 
-    if ('constraints' in node) {
-      if (node.parent && ('width' in node.parent) && node.constraints.horizontal === 'MAX') {
+    if ('constraints' in node && !hasLinearLayoutParent && node.parent && (node.x > 0 || node.y > 0)) {
+      let isStartG: boolean;
+      let isTopG: boolean;
+      if (('width' in node.parent) && node.constraints.horizontal === 'MAX') {
         const pos = node.parent.width - node.width - x;
         this.pushModifier(['android:layout_marginEnd',`${sliceNum(pos)}dp`]);
-      }
-      else {
+        isStartG = false;
+      } else {
         this.pushModifier(['android:layout_marginStart',`${sliceNum(x)}dp`]);
+        isStartG = true;
       }
-      if (node.parent && ('height' in node.parent) && node.constraints.vertical === 'MAX') {
+
+      if (('height' in node.parent) && node.constraints.vertical === 'MAX') {
         const pos = node.parent.height - node.height - y;
         this.pushModifier(['android:layout_marginBottom',`${sliceNum(pos)}dp`]);
-      }
-      else {
+        isTopG = false;
+      } else {
         this.pushModifier(['android:layout_marginTop',`${sliceNum(y)}dp`]);
+        isTopG = true;
       }
-    } else if (!hasLinearLayoutParent && node.parent && (node.x > 0 || node.y > 0)) {
-      this.pushModifier(['android:layout_marginStart',`${sliceNum(x)}dp`]);
-      this.pushModifier(['android:layout_marginTop',`${sliceNum(y)}dp`]);
+
+      if (!(isStartG && isTopG)) {
+        const gravity = `${isStartG ? "start" : "end"}|${isTopG ? "top" : "bottom"}`
+        this.pushModifier(['android:layout_gravity', gravity]);
+      }
     } else {
       if (node.paddingTop > 0) {
         this.pushModifier([`${layoutPosition}Top`,`${node.paddingTop}dp`]);
