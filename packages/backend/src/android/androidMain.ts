@@ -234,7 +234,7 @@ const androidView = (node: SceneNode & BaseFrameMixin): string => {
 };
 
 const androidLinearSpace = (node: SceneNode): string => {
-  const result = new androidDefaultBuilder("Space")
+  const result = new androidDefaultBuilder("View")
     .spaceSize(node)
     
   previousExecutionCache.push(result.build());
