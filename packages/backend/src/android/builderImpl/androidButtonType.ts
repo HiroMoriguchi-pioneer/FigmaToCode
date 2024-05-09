@@ -74,12 +74,11 @@ const getChildText = (node: SceneNode & BaseFrameMixin): TextNode | undefined =>
 
 const getLayout = (node: SceneNode & BaseFrameMixin): { foreground: SceneNode | undefined, backgorund: SceneNode | undefined} => {
   const layout = node.children.filter(child =>
-    child.type == "RECTANGLE" 
-    || child.type == "GROUP" 
-    || (androidNameParser(child.name).type !== AndroidType.text 
-    && androidNameParser(child.name).type !== AndroidType.linearLayout 
-    && (child.type === "COMPONENT" 
-    || child.type === "INSTANCE"))
+    child.type == "RECTANGLE"
+    || child.type == "GROUP"
+    || (androidNameParser(child.name).type !== AndroidType.text
+      && androidNameParser(child.name).type !== AndroidType.linearLayout
+      && (child.type === "COMPONENT" || child.type === "INSTANCE"))
   )
 
   layout.forEach((child, index) => {
@@ -102,12 +101,11 @@ const getLayout = (node: SceneNode & BaseFrameMixin): { foreground: SceneNode | 
 
 const getIsAsset = (layout: SceneNode | undefined): boolean => {
   if (layout !== undefined) {
-    return ("isAsset" in layout 
-    && layout.isAsset) 
-    || layout.type === "GROUP" 
+    return "isAsset" in layout 
+    && layout.isAsset
+    || layout.type === "GROUP"
     || (androidNameParser(layout.name).type !== AndroidType.text
-    && (layout.type === "COMPONENT" 
-    || layout.type === "INSTANCE"))
+      && (layout.type === "COMPONENT" || layout.type === "INSTANCE"))
   } else {
     return false
   }
