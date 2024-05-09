@@ -254,7 +254,6 @@ export class androidDefaultBuilder {
 
     if (node != undefined && "textAlignHorizontal" in node) {
       let hAlign = "";
-      console.log("tharada: " + node.textAlignHorizontal)
       switch (node.textAlignHorizontal) {
         case "LEFT":
           hAlign = "textStart"
