@@ -280,7 +280,7 @@ const androidButton = (node: SceneNode & BaseFrameMixin, ostyle:outputStyle = ou
   const buttonNode = androidButtonType(node)
 
   if (buttonNode.type === ButtonType.IconTextButton) {
-    return androidIconTextButton(node, buttonNode.foreground, buttonNode.text, ostyle)
+    return androidIconTextButton(node, buttonNode.foreground, buttonNode.background, buttonNode.text, ostyle)
   }
   
   let result = new androidDefaultBuilder(buttonNode.value);
@@ -342,7 +342,13 @@ const androidButton = (node: SceneNode & BaseFrameMixin, ostyle:outputStyle = ou
   return result.build(0);
 };
 
-const androidIconTextButton = (node: SceneNode & BaseFrameMixin, layout: SceneNode | undefined, text: TextNode | undefined, ostyle:outputStyle = outputStyle.encoded): string => {
+const androidIconTextButton = (
+  node: SceneNode & BaseFrameMixin,
+  foreground: SceneNode | undefined,
+  backgorund: SceneNode | undefined,
+  text: TextNode | undefined,
+  ostyle:outputStyle = outputStyle.encoded
+): string => {
   const linear = node.children.filter(child => androidNameParser(child.name).type === AndroidType.linearLayout)[0]
   const isForwardText = "children" in linear && androidNameParser(linear.children[0].name).type === AndroidType.text
 
@@ -353,7 +359,7 @@ const androidIconTextButton = (node: SceneNode & BaseFrameMixin, layout: SceneNo
                 .position(linear, localSettings.optimizeLayout)
                 .size(node, localSettings.optimizeLayout);
   }
-  const resname = ostyle===outputStyle.selectable ? node.parent?.name : layout?.name;
+  const resname = ostyle===outputStyle.selectable ? node.parent?.name : foreground?.name;
   if ("layoutMode" in linear && linear.layoutMode === "HORIZONTAL") {
     result.pushModifier([`android:drawable${isForwardText ? "Right" : "Left"}`, `@drawable/${resname}`])
   } else {
@@ -363,7 +369,7 @@ const androidIconTextButton = (node: SceneNode & BaseFrameMixin, layout: SceneNo
     result.pushModifier(["android:drawablePadding", `${linear.itemSpacing}dp`])
   }
 
-  result.element.addModifier(["android:background", "@color/clearColor"]);
+  result.element.addModifier(["android:background", backgorund == undefined ? "@color/clearColor" : `@drawable/${backgorund.name}`]);
   
   return result.build(0);
 };

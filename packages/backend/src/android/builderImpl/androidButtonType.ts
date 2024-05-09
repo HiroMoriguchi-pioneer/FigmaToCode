@@ -32,7 +32,7 @@ export const androidButtonType = (node: SceneNode & BaseFrameMixin ): {
       type: ButtonType.IconTextButton,
       value: "",
       foreground: getLayout(linear[0]).foreground,
-      background: undefined,
+      background: getLayout(node).foreground,
       text: getChildText(linear[0]) 
     }
   } else if (childText === undefined) {
@@ -77,6 +77,7 @@ const getLayout = (node: SceneNode & BaseFrameMixin): { foreground: SceneNode | 
     child.type == "RECTANGLE" 
     || child.type == "GROUP" 
     || (androidNameParser(child.name).type !== AndroidType.text 
+    && androidNameParser(child.name).type !== AndroidType.linearLayout 
     && (child.type === "COMPONENT" 
     || child.type === "INSTANCE"))
   )
